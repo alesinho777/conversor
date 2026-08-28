@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convertidor de Imágenes Online Gratis - JPG, PNG, WebP</title>
+  <meta name="description" content="Convierte y comprime tus imágenes entre JPG, PNG y WebP gratis, directo en tu navegador. Sin subir archivos a ningún servidor: 100% privado y rápido.">
+  <link rel="icon" href="assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>Convertidor de Imágenes Online</h1>
+    <p class="tagline">Convierte y comprime JPG, PNG y WebP gratis. Todo ocurre en tu navegador: tus imágenes nunca se suben a ningún servidor.</p>
+  </header>
+
+  <main>
+    <section class="ad-slot" id="ad-top" aria-hidden="true">
+      <!-- Espacio reservado para Google AdSense -->
+    </section>
+
+    <section class="converter-card">
+      <div id="dropzone" class="dropzone">
+        <p>Arrastra tus imágenes aquí o</p>
+        <label for="file-input" class="btn btn-primary">Elegir imágenes</label>
+        <input type="file" id="file-input" accept="image/*" multiple hidden>
+      </div>
+
+      <div class="controls">
+        <div class="control-group">
+          <label for="format-select">Convertir a</label>
+          <select id="format-select">
+            <option value="image/png">PNG</option>
+            <option value="image/jpeg" selected>JPG</option>
+            <option value="image/webp">WebP</option>
+          </select>
+        </div>
+        <div class="control-group" id="quality-group">
+          <label for="quality-range">Calidad: <span id="quality-value">80</span>%</label>
+          <input type="range" id="quality-range" min="10" max="100" value="80">
+        </div>
+      </div>
+
+      <div class="selected-files" id="selected-files" hidden>
+        <p id="selected-count"></p>
+        <button id="convert-btn" class="btn btn-primary">Convertir</button>
+      </div>
+
+      <div id="results" class="results" hidden>
+        <div class="results-header">
+          <h2>Resultados</h2>
+          <button id="download-all" class="btn btn-secondary" hidden>Descargar todo (.zip)</button>
+        </div>
+        <div id="results-list" class="results-list"></div>
+      </div>
+    </section>
+
+    <section class="ad-slot" id="ad-bottom" aria-hidden="true">
+      <!-- Espacio reservado para Google AdSense -->
+    </section>
+
+    <section class="info">
+      <h2>¿Cómo funciona este convertidor de imágenes?</h2>
+      <p>
+        Esta herramienta te permite convertir imágenes entre los formatos JPG, PNG y WebP,
+        además de ajustar su calidad para reducir el tamaño del archivo. A diferencia de otras
+        webs de conversión, aquí no se sube ninguna imagen a un servidor: todo el procesamiento
+        ocurre directamente en tu navegador usando tecnología estándar (Canvas API), por lo que
+        tus archivos son 100% privados y la conversión es instantánea.
+      </p>
+      <p>
+        Es ideal para reducir el peso de fotos antes de subirlas a una web, cambiar el formato
+        de una imagen para compatibilidad, o comprimir capturas de pantalla sin perder demasiada
+        calidad visual. Puedes convertir varias imágenes a la vez y descargarlas todas juntas
+        en un archivo .zip.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Convertidor de Imágenes Online. <a href="privacy.html">Política de privacidad</a></p>
+  </footer>
+
+  <canvas id="hidden-canvas" hidden></canvas>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="js/converter.js"></script>
+</body>
+</html>
