@@ -12,6 +12,7 @@ Herramienta web estática de conversión de imágenes entre los formatos **JPG, 
   - [jsPDF 2.5.1](https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js) (global `window.jspdf.jsPDF`), usado solo para la conversión a PDF.
 - Conversión de imágenes mediante `<canvas>`: `canvas.toBlob()` para PNG/JPG/WebP/AVIF (nativo), un encoder manual (`canvasToBMP`) para BMP, y jsPDF (`canvasToPDF`) para PDF.
 - Repositorio git con remoto en `https://github.com/alesinho777/conversor.git`.
+- Google Analytics (GA4) instalado vía `gtag.js` en el `<head>` de `index.html` y `privacy.html`, ID de medición `G-WV6ZBPRRDH`.
 
 ## Estructura de archivos
 
