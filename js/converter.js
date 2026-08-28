@@ -18,13 +18,18 @@
     "image/png": "png",
     "image/jpeg": "jpg",
     "image/webp": "webp",
+    "image/avif": "avif",
+    "image/bmp": "bmp",
+    "application/pdf": "pdf",
   };
+
+  const NO_QUALITY_FORMATS = new Set(["image/png", "image/bmp", "application/pdf"]);
 
   let pendingFiles = [];
   let convertedFiles = [];
 
   function updateQualityVisibility() {
-    qualityGroup.style.display = formatSelect.value === "image/png" ? "none" : "flex";
+    qualityGroup.style.display = NO_QUALITY_FORMATS.has(formatSelect.value) ? "none" : "flex";
   }
 
   formatSelect.addEventListener("change", updateQualityVisibility);
@@ -95,10 +100,25 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0);
 
+      if (mimeType === "image/bmp") {
+        URL.revokeObjectURL(objectUrl);
+        addResult(file.name, canvasToBMP(canvas), mimeType);
+        return;
+      }
+
+      if (mimeType === "application/pdf") {
+        URL.revokeObjectURL(objectUrl);
+        canvasToPDF(canvas, quality).then((blob) => addResult(file.name, blob, mimeType));
+        return;
+      }
+
       canvas.toBlob(
         (blob) => {
           URL.revokeObjectURL(objectUrl);
-          if (!blob) return;
+          if (!blob) {
+            addError(file.name, "tu navegador no soporta convertir a este formato");
+            return;
+          }
           addResult(file.name, blob, mimeType);
         },
         mimeType,
@@ -108,6 +128,60 @@
 
     img.onerror = () => URL.revokeObjectURL(objectUrl);
     img.src = objectUrl;
+  }
+
+  function canvasToBMP(sourceCanvas) {
+    const w = sourceCanvas.width;
+    const h = sourceCanvas.height;
+    const sourceCtx = sourceCanvas.getContext("2d");
+    const pixels = sourceCtx.getImageData(0, 0, w, h).data;
+
+    const rowSize = Math.floor((24 * w + 31) / 32) * 4;
+    const pixelArraySize = rowSize * h;
+    const fileSize = 54 + pixelArraySize;
+
+    const buffer = new ArrayBuffer(fileSize);
+    const view = new DataView(buffer);
+
+    view.setUint8(0, 0x42);
+    view.setUint8(1, 0x4d);
+    view.setUint32(2, fileSize, true);
+    view.setUint32(10, 54, true);
+
+    view.setUint32(14, 40, true);
+    view.setInt32(18, w, true);
+    view.setInt32(22, h, true);
+    view.setUint16(26, 1, true);
+    view.setUint16(28, 24, true);
+    view.setUint32(34, pixelArraySize, true);
+    view.setInt32(38, 2835, true);
+    view.setInt32(42, 2835, true);
+
+    let offset = 54;
+    for (let y = h - 1; y >= 0; y--) {
+      for (let x = 0; x < w; x++) {
+        const i = (y * w + x) * 4;
+        view.setUint8(offset++, pixels[i + 2]);
+        view.setUint8(offset++, pixels[i + 1]);
+        view.setUint8(offset++, pixels[i]);
+      }
+      offset += rowSize - w * 3;
+    }
+
+    return new Blob([buffer], { type: "image/bmp" });
+  }
+
+  function canvasToPDF(sourceCanvas, quality) {
+    const w = sourceCanvas.width;
+    const h = sourceCanvas.height;
+    const doc = new window.jspdf.jsPDF({
+      orientation: w > h ? "landscape" : "portrait",
+      unit: "px",
+      format: [w, h],
+    });
+    const dataUrl = sourceCanvas.toDataURL("image/jpeg", quality || 0.92);
+    doc.addImage(dataUrl, "JPEG", 0, 0, w, h);
+    return Promise.resolve(doc.output("blob"));
   }
 
   function baseName(name) {
@@ -128,12 +202,26 @@
 
     convertedFiles.push({ name: fileName, blob });
 
+    const preview = mimeType === "application/pdf"
+      ? `<div class="result-preview-placeholder">PDF</div>`
+      : `<img src="${url}" alt="${fileName}">`;
+
     const item = document.createElement("div");
     item.className = "result-item";
     item.innerHTML = `
-      <img src="${url}" alt="${fileName}">
+      ${preview}
       <div class="meta">${fileName} · ${formatBytes(blob.size)}</div>
       <a class="btn btn-primary" href="${url}" download="${fileName}">Descargar</a>
+    `;
+    resultsList.appendChild(item);
+  }
+
+  function addError(originalName, message) {
+    const item = document.createElement("div");
+    item.className = "result-item";
+    item.innerHTML = `
+      <div class="result-preview-placeholder">⚠️</div>
+      <div class="meta">${originalName}: ${message}</div>
     `;
     resultsList.appendChild(item);
   }

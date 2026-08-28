@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Convertidor de Imágenes Online Gratis - JPG, PNG, WebP</title>
-  <meta name="description" content="Convierte y comprime tus imágenes entre JPG, PNG y WebP gratis, directo en tu navegador. Sin subir archivos a ningún servidor: 100% privado y rápido.">
+  <title>Convertidor de Imágenes Online Gratis - JPG, PNG, WebP, PDF y más</title>
+  <meta name="description" content="Convierte y comprime tus imágenes entre JPG, PNG, WebP, AVIF, BMP y PDF gratis, directo en tu navegador. Sin subir archivos a ningún servidor: 100% privado y rápido.">
   <link rel="icon" href="assets/favicon.svg">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="site-header">
     <h1>Convertidor de Imágenes Online</h1>
-    <p class="tagline">Convierte y comprime JPG, PNG y WebP gratis. Todo ocurre en tu navegador: tus imágenes nunca se suben a ningún servidor.</p>
+    <p class="tagline">Convierte y comprime JPG, PNG, WebP, AVIF, BMP y PDF gratis. Todo ocurre en tu navegador: tus imágenes nunca se suben a ningún servidor.</p>
   </header>
 
   <main>
@@ -33,6 +33,9 @@
             <option value="image/png">PNG</option>
             <option value="image/jpeg" selected>JPG</option>
             <option value="image/webp">WebP</option>
+            <option value="image/avif">AVIF</option>
+            <option value="image/bmp">BMP</option>
+            <option value="application/pdf">PDF</option>
           </select>
         </div>
         <div class="control-group" id="quality-group">
@@ -62,8 +65,8 @@
     <section class="info">
       <h2>¿Cómo funciona este convertidor de imágenes?</h2>
       <p>
-        Esta herramienta te permite convertir imágenes entre los formatos JPG, PNG y WebP,
-        además de ajustar su calidad para reducir el tamaño del archivo. A diferencia de otras
+        Esta herramienta te permite convertir imágenes entre los formatos JPG, PNG, WebP, AVIF,
+        BMP y PDF, además de ajustar su calidad para reducir el tamaño del archivo. A diferencia de otras
         webs de conversión, aquí no se sube ninguna imagen a un servidor: todo el procesamiento
         ocurre directamente en tu navegador usando tecnología estándar (Canvas API), por lo que
         tus archivos son 100% privados y la conversión es instantánea.
@@ -84,6 +87,7 @@
   <canvas id="hidden-canvas" hidden></canvas>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="js/converter.js"></script>
 </body>
 </html>
